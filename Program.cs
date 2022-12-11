@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using SistemaDeTarefas.Data;
+using SistemaDeTarefas.Repositorios;
+using SistemaDeTarefas.Repositorios.Interfaces;
+
 namespace SistemaDeTarefas
 {
     public class Program
@@ -13,6 +18,16 @@ namespace SistemaDeTarefas
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Context
+            builder.Services.AddEntityFrameworkSqlServer()
+                .AddDbContext<SistemaDeTarefasDBContext>(options =>
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"));
+                });
+
+            //Repositorios
+            builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -25,7 +40,6 @@ namespace SistemaDeTarefas
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
